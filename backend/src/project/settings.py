@@ -41,6 +41,9 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    'rest_framework.authentication',
+    'rest_framework_simplejwt',
+    "djoser",
     "drf_spectacular",
     # "polls",
     "accounts",
@@ -170,6 +173,11 @@ REST_FRAMEWORK = {
         "rest_framework.parsers.FormParser",
         "rest_framework.parsers.MultiPartParser",
     ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.AllowAny', ]
 }
 
 # spectacular (API document)
@@ -181,10 +189,13 @@ SPECTACULAR_SETTINGS = {
     ],
     "SWAGGER_UI_SETTINGS": {
         "persistAuthorization": True,
+        "url":"http://127.0.0.1:8000/api/schema/"
     },
     # request, response の オブジェクトを分ける. frontend で生成する create アクション(POST) の型に readonly field が含まれなくなる。
     "COMPONENT_SPLIT_REQUEST": True,
-    # /api/ の prefix を除く
+
+    # フロントエンドから参照するスキーマ情報には `/api/` を含めてないようにしたかったため、
+    # 出力するスキーマの prefix: `/api/` を除く
     # TODO: これをいれていると swagger の リクエスト先 URL も /api/ が省かれて 404 エラーとなる。
     #       設定方法がわからなかったので、代替案として env で切り替えられるようにしている。 swagger url の設定方法を確認する
     "SCHEMA_PATH_PREFIX_TRIM": "/api/" if os.getenv("ENABLE_SCHEMA_PATH_PREFIX_TRIM", "1") == "1" else "",

@@ -9,6 +9,9 @@ Markdown==3.3.7
 python-dotenv==0.20.0
 drf-nested-routers==0.93.4
 django-model-utils==4.2.0
+djangorestframework-simplejwt==4.8.0
+djoser==2.1.0
+Pillow==9.2.0
 
 # DI
 # =====================
