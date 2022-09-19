@@ -1,53 +1,60 @@
 /* eslint-disable */
-export type Choice = {
-  id: number
-  choice_text: string
-  votes: number
-  question: number
-}
-
-export type ChoiceRequest = {
-  choice_text: string
-}
-
-export type PaginatedChoiceList = {
+export type PaginatedUserList = {
   count?: number | undefined
   next?: string | null | undefined
   previous?: string | null | undefined
-  results?: Choice[] | undefined
+  results?: User[] | undefined
 }
 
-export type PaginatedQuestionDetailList = {
-  count?: number | undefined
-  next?: string | null | undefined
-  previous?: string | null | undefined
-  results?: QuestionDetail[] | undefined
+export type SetPassword = {
+  new_password: string
+  current_password: string
 }
 
-export type PatchedChoiceRequest = {
-  choice_text?: string | undefined
+export type SetPasswordRequest = {
+  new_password: string
+  current_password: string
 }
 
-export type PatchedQuestionUpdateRequest = {
-  pub_date?: string | undefined
-  question_text?: string | undefined
+export type TokenObtainPair = {
+  access: string
+  refresh: string
 }
 
-export type Question = {
+export type TokenObtainPairRequest = {
+  username: string
+  password: string
+}
+
+export type TokenRefresh = {
+  access: string
+}
+
+export type TokenRefreshRequest = {
+  refresh: string
+}
+
+export type TokenVerifyRequest = {
+  token: string
+}
+
+export type User = {
+  email?: string | undefined
   id: number
-  question_text: string
-  pub_date: string
+  /** この項目は必須です。半角アルファベット、半角数字、@/./+/-/_ で150文字以下にしてください。 */
+  username: string
 }
 
-export type QuestionDetail = {
+export type UserCreate = {
+  email?: string | undefined
+  /** この項目は必須です。半角アルファベット、半角数字、@/./+/-/_ で150文字以下にしてください。 */
+  username: string
   id: number
-  choice_set: Choice[]
-  question_text: string
-  pub_date: string
 }
 
-export type QuestionDetailRequest = {
-  choice_set: ChoiceRequest[]
-  question_text: string
-  pub_date: string
+export type UserCreateRequest = {
+  email?: string | undefined
+  /** この項目は必須です。半角アルファベット、半角数字、@/./+/-/_ で150文字以下にしてください。 */
+  username: string
+  password: string
 }

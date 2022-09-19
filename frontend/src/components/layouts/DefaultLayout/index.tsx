@@ -17,33 +17,18 @@ const DefaultLayout = ({children}) => {
     return (
         <>
             <Head>
-                <title>Django Tutorial Poll App</title>
-                <meta name='description' content='djagno tutorial poll app'/>
+                <title>サイトタイトル</title>
+                <meta name='description' content='サイトタイトル'/>
                 <link rel='icon' href='/favicon.ico'/>
             </Head>
             <div style={{minHeight: "100vh"}}>
                 {/* @ts-ignore */}
-                <AppBar position="static" color="dark">
+                <AppBar position="static" color="primary">
                     <Toolbar variant="dense">
-                        <Box mr={1}>
-                            <IconButton
-                                size="large"
-                                aria-label="github"
-                                aria-controls="menu-appbar"
-                                aria-haspopup="true"
-                                color="inherit"
-                                href="https://github.com/tanakanotarou2/dj-nextjs-poll-app"
-                            >
-                                <GitHubIcon/>
-                            </IconButton>
-                        </Box>
                         <Link variant="h5" color="inherit" underline="none" component="button" onClick={goHome}>
-                            Poll Questions
+                            サイトタイトル
                         </Link>
                         <div style={{flexGrow: 1}}/>
-                        <Box mr={2}>
-                            <Button color="inherit" variant="outlined" onClick={goCreate}>質問作成</Button>
-                        </Box>
                     </Toolbar>
                 </AppBar>
                 <div style={{paddingTop: 30, paddingBottom: 20}}>

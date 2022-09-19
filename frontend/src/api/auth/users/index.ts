@@ -1,5 +1,5 @@
 /* eslint-disable */
-import type * as Types from '../../../../@types'
+import type * as Types from '../../@types'
 
 export type Methods = {
   get: {
@@ -11,13 +11,13 @@ export type Methods = {
     } | undefined
 
     status: 200
-    resBody: Types.PaginatedChoiceList
+    resBody: Types.PaginatedUserList
   }
 
   post: {
     status: 201
-    resBody: Types.Choice
+    resBody: Types.UserCreate
     reqFormat: FormData
-    reqBody: Types.ChoiceRequest
+    reqBody: Types.UserCreateRequest
   }
 }
