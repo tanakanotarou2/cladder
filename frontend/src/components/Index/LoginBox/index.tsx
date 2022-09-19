@@ -8,11 +8,12 @@ import { TokenObtainPairRequest } from '../../../api/@types';
 import { AxiosError } from 'axios';
 import FieldErrorMessages from '@/components/shared/FieldErrorMessages';
 import { useAtom } from 'jotai';
-import { messageAtom } from '@/lib/jotaiAtom';
+import { messageAtom, authTokenAtom } from '@/lib/jotaiAtom';
 
 const LoginBox = () => {
   const [loading, setLoading] = useState(false);
   const [, addMessage] = useAtom(messageAtom);
+  const [authToken, setAuthToken] = useAtom(authTokenAtom);
 
   const {
     handleSubmit,
@@ -26,9 +27,12 @@ const LoginBox = () => {
   }
 
   const mutation = useMutation(postLogin, {
-    onSuccess: () => {
+    onSuccess: (res) => {
       // TODO: ログイン後ページへ遷移
-      addMessage({ text: 'ログインしました', 'variant': 'success' });
+      console.log(authToken);
+      console.log(res.access);
+      setAuthToken(res.access);
+      addMessage({ text: 'ごきげんよう', 'variant': 'success' });
     },
     onError: (error: AxiosError) => {
       console.log('err', error);
@@ -94,8 +98,8 @@ const LoginBox = () => {
                              InputLabelProps={{
                                shrink: true,
                              }}
-                    error={!!errors.password}
-                    helperText={errors.password?.message}
+                             error={!!errors.password}
+                             helperText={errors.password?.message}
                   />
                 }
               />
