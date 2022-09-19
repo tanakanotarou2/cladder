@@ -16,6 +16,7 @@
     "@aspida/react-query": "^1.10.2",
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
+    "@hookform/error-message": "^2.0.0",
     "@material-ui/icons": "^4.11.3",
     "@mui/icons-material": "^5.8.3",
     "@mui/material": "^5.8.3",
