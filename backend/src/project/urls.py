@@ -1,19 +1,15 @@
+from dj_rest_auth.jwt_auth import get_refresh_view
 from django.contrib import admin
-from django.urls import include, path
-from djoser.views import UserViewSet as DJOserUserViewSet
+from django.urls import path
+# from djoser.views import UserViewSet as DJOserUserViewSet
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
-from rest_framework import routers
 
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
+
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     # path("api/polls/", include("polls.urls")),
-
-    # auth
-    path('api/auth/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('api/auth/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
 
     # API SCHEMA
     # ==========================================
@@ -25,15 +21,25 @@ urlpatterns = [
     ),
 ]
 
-# DJOser の一部のエンドポイントだけを使用します。
-user_router = routers.SimpleRouter()
-user_router.register("users", DJOserUserViewSet)
+# urlpatterns += [
+#     path('dj-rest-auth/', include('dj_rest_auth.urls')),
+# ]
 
-# 使用するエンドポイントの URL name
-enable_url_names = (
-    "user-set-password",
-    "user-list",
-)
-auth_patterns = [pat for pat in user_router.urls if pat.name in enable_url_names]
 
-urlpatterns += [path("api/auth/", include(auth_patterns)), ]
+from dj_rest_auth.views import (
+    LoginView, LogoutView, UserDetailsView, )
+
+from rest_framework_simplejwt.views import TokenVerifyView
+
+from prj_auth import views as prj_auth_views
+
+urlpatterns += [
+    path('api/login/', LoginView.as_view(), name='rest_login'),
+    path('api/logout/', LogoutView.as_view(), name='rest_logout'),
+    path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
+    path('api/token/refresh/', get_refresh_view().as_view(), name='token_refresh'),
+    path('api/csrf/', prj_auth_views.CSRFView.as_view()),
+    path('api/ping/', prj_auth_views.ping),
+
+    path('api/user/', UserDetailsView.as_view(), name='rest_user_details'),
+]
