@@ -2,8 +2,8 @@ import os
 from datetime import timedelta
 from pathlib import Path
 
-from dotenv import load_dotenv
 from decouple import config
+from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -29,9 +29,9 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
-    'rest_framework.authtoken',
-    'rest_framework_simplejwt',
-    'dj_rest_auth',
+    "rest_framework.authtoken",
+    "rest_framework_simplejwt",
+    "dj_rest_auth",
     "drf_spectacular",
     # "polls",
     "accounts",
@@ -78,7 +78,7 @@ DATABASES = {
     }
 }
 
-AUTH_USER_MODEL = 'accounts.User'
+AUTH_USER_MODEL = "accounts.User"
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -158,11 +158,9 @@ REST_FRAMEWORK = {
         "rest_framework.parsers.FormParser",
         "rest_framework.parsers.MultiPartParser",
     ],
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        # 'rest_framework.authentication.BasicAuthentication',
-        'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "dj_rest_auth.jwt_auth.JWTCookieAuthentication",
     ],
-    'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.AllowAny', ]
 }
 
 # dj_rest_auth
@@ -170,30 +168,28 @@ REST_FRAMEWORK = {
 
 # jwt の設定
 REST_USE_JWT = True
-JWT_AUTH_COOKIE = 'jwt-token'
-JWT_AUTH_REFRESH_COOKIE = 'jwt-refresh-token'
+JWT_AUTH_COOKIE = "jwt-token"
+JWT_AUTH_REFRESH_COOKIE = "jwt-refresh-token"
 JWT_AUTH_COOKIE_USE_CSRF = True
 JWT_AUTH_HTTPONLY = True
-JWT_AUTH_SAMESITE = config('COOKIE_SAMESITE', default='None')
-JWT_AUTH_SECURE = config('COOKIE_SECURE', cast=bool, default=True)
+JWT_AUTH_SAMESITE = config("COOKIE_SAMESITE", default="None")
+JWT_AUTH_SECURE = config("COOKIE_SECURE", cast=bool, default=True)
 JWT_AUTH_RETURN_EXPIRATION = True  # ログイン時のレスポンスに有効期限を含める
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=config('ACCESS_TOKEN_LIFETIME_MINUTES', cast=int,default=60)),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=config('REFRESH_TOKEN_LIFETIME_DAYS', cast=int, default=30)),
-    'ROTATE_REFRESH_TOKENS':True,
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=config("ACCESS_TOKEN_LIFETIME_MINUTES", cast=int, default=60)),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=config("REFRESH_TOKEN_LIFETIME_DAYS", cast=int, default=30)),
+    "ROTATE_REFRESH_TOKENS": True,
 }
 
 # serializer
-REST_AUTH_SERIALIZERS = {
-    'JWT_SERIALIZER_WITH_EXPIRATION': 'prj_auth.serializers.LoginSerializer'
-}
+REST_AUTH_SERIALIZERS = {"JWT_SERIALIZER_WITH_EXPIRATION": "prj_auth.serializers.LoginSerializer"}
 
 
 # CSRF トークンのクッキー設定
-CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS', cast=lambda v: [s.strip() for s in v.split(',')])
-CSRF_COOKIE_SAMESITE = config('COOKIE_SAMESITE', default='None')
-CSRF_COOKIE_SECURE = config('COOKIE_SECURE', cast=bool, default=True)
+CSRF_TRUSTED_ORIGINS = config("CSRF_TRUSTED_ORIGINS", cast=lambda v: [s.strip() for s in v.split(",")])
+CSRF_COOKIE_SAMESITE = config("COOKIE_SAMESITE", default="None")
+CSRF_COOKIE_SECURE = config("COOKIE_SECURE", cast=bool, default=True)
 
 # spectacular (API document)
 # https://drf-spectacular.readthedocs.io/en/latest/settings.html
@@ -202,13 +198,9 @@ SPECTACULAR_SETTINGS = {
     "SERVE_PERMISSIONS": [
         "rest_framework.permissions.AllowAny" if DEBUG else "rest_framework.permissions.IsAdminUser"
     ],
-    "SWAGGER_UI_SETTINGS": {
-        "persistAuthorization": True,
-        "url": "http://127.0.0.1:8000/api/schema/"
-    },
+    "SWAGGER_UI_SETTINGS": {"persistAuthorization": True, "url": "http://127.0.0.1:8000/api/schema/"},
     # request, response の オブジェクトを分ける. frontend で生成する create アクション(POST) の型に readonly field が含まれなくなる。
     "COMPONENT_SPLIT_REQUEST": True,
-
     # フロントエンドから参照するスキーマ情報には `/api/` を含めてないようにしたかったため、
     # 出力するスキーマの prefix: `/api/` を除く
     # TODO: これをいれていると swagger の リクエスト先 URL も /api/ が省かれて 404 エラーとなる。

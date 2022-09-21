@@ -1,8 +1,11 @@
-from dj_rest_auth.serializers import JWTSerializerWithExpiration as OrgJWTSerializerWithExpiration
+from dj_rest_auth.serializers import (
+    JWTSerializerWithExpiration as OrgJWTSerializerWithExpiration,
+)
 
 
 class LoginSerializer(OrgJWTSerializerWithExpiration):
     """ログインレスポンス"""
+
     # drop token
     access_token = None
     refresh_token = None
