@@ -4,7 +4,7 @@ import { Controller, useForm } from 'react-hook-form';
 
 import { useMutation } from 'react-query';
 import { useState } from 'react';
-import { TokenObtainPairRequest } from '../../../api/@types';
+// import { TokenObtainPairRequest } from '../../../api/@types';
 import { AxiosError } from 'axios';
 import FieldErrorMessages from '@/components/shared/FieldErrorMessages';
 import { useAtom } from 'jotai';
@@ -22,40 +22,40 @@ const LoginBox = () => {
     formState: { errors },
   } = useForm<TokenObtainPairRequest>();
 
-  function postLogin(body: TokenObtainPairRequest) {
-    return apiClient.auth.token.$post({ body });
-  }
+  // function postLogin(body: TokenObtainPairRequest) {
+  //   return apiClient.auth.token.$post({ body });
+  // }
 
   const mutation = useMutation(postLogin, {
-    onSuccess: (res) => {
-      // TODO: ログイン後ページへ遷移
-      console.log(authToken);
-      console.log(res.access);
-      setAuthToken(res.access);
-      addMessage({ text: 'ごきげんよう', 'variant': 'success' });
-    },
-    onError: (error: AxiosError) => {
-      console.log('err', error);
-      addMessage({ text: '不明なエラー', 'variant': 'error' });
-      // const err: any = apiErrorHandler.putError(error);
-      // if (err instanceof SingleErrorMessage) {
-      //   addMessage({ text: err.message, 'variant': 'warning' });
-      // } else if (err instanceof FormErrors) {
-      //   setFormErrors(setError, err.errors);
-      // } else {
-      //   console.log('err', error);
-      //   addMessage({ text: '不明なエラー', 'variant': 'error' });
-      // }
-    },
-    onSettled: () => {
-      setLoading(false);
-    },
+    // onSuccess: (res) => {
+    //   // TODO: ログイン後ページへ遷移
+    //   console.log(authToken);
+    //   console.log(res.access);
+    //   setAuthToken(res.access);
+    //   addMessage({ text: 'ごきげんよう', 'variant': 'success' });
+    // },
+    // onError: (error: AxiosError) => {
+    //   console.log('err', error);
+    //   addMessage({ text: '不明なエラー', 'variant': 'error' });
+    //   // const err: any = apiErrorHandler.putError(error);
+    //   // if (err instanceof SingleErrorMessage) {
+    //   //   addMessage({ text: err.message, 'variant': 'warning' });
+    //   // } else if (err instanceof FormErrors) {
+    //   //   setFormErrors(setError, err.errors);
+    //   // } else {
+    //   //   console.log('err', error);
+    //   //   addMessage({ text: '不明なエラー', 'variant': 'error' });
+    //   // }
+    // },
+    // onSettled: () => {
+    //   setLoading(false);
+    // },
 
   });
 
   const onSubmit = (data: TokenObtainPairRequest) => {
-    setLoading(true);
-    mutation.mutate(data);
+    // setLoading(true);
+    // mutation.mutate(data);
   };
   return (
     <Container maxWidth='sm'>
