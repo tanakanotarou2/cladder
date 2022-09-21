@@ -12,6 +12,8 @@ from rest_framework.authentication import BaseAuthentication
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from prj_auth.serializers import LoginResponseSerializer
+
 
 @extend_schema_view(
     get=extend_schema(
@@ -27,6 +29,11 @@ class CSRFView(APIView):
         return Response({"csrfToken": get_token(request)})
 
 
+@extend_schema_view(
+    post=extend_schema(
+        responses={200: LoginResponseSerializer},
+    ),
+)
 class LoginView(OrgLoginView):
     # クライアントが session に認証情報を持っていても
     # 再度ログインできるように authentication をスキップしています
@@ -44,15 +51,16 @@ OrgRefreshViewCls = get_refresh_view()
         responses={
             200: inline_serializer(
                 name="RefreshTokenResponse",
-                fields={"access_token_expiration": serializers.DateTimeField(help_text="新しいトークンの有効期限")},
+                fields={"accessTokenExpiration": serializers.DateTimeField(help_text="新しいトークンの有効期限")},
             )
         },
         description="アクセストークンをリフレッシュします",
     ),
 )
 class RefreshView(OrgRefreshViewCls):  # type: ignore
-    # アクセストークンが切れていても、リフレッシュトークンが有効期限内であれば
+    # Note: アクセストークンが切れていても、リフレッシュトークンが有効期限内であれば
     # リフレッシュしたいので、authentication をスキップしています
+    # 必要な認証があれば追加してください
     authentication_classes: List[BaseAuthentication] = []
 
     def finalize_response(self, request, response, *args, **kwargs):

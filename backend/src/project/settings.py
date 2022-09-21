@@ -154,13 +154,18 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
     "PAGE_SIZE": 100,
     "DEFAULT_PARSER_CLASSES": [
-        "rest_framework.parsers.JSONParser",
-        "rest_framework.parsers.FormParser",
-        "rest_framework.parsers.MultiPartParser",
+        "djangorestframework_camel_case.parser.CamelCaseFormParser",
+        "djangorestframework_camel_case.parser.CamelCaseMultiPartParser",
+        "djangorestframework_camel_case.parser.CamelCaseJSONParser",
     ],
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "dj_rest_auth.jwt_auth.JWTCookieAuthentication",
     ],
+    "DEFAULT_RENDERER_CLASSES": ("djangorestframework_camel_case.render.CamelCaseJSONRenderer",),
+    # doc: https://github.com/vbabiy/djangorestframework-camel-case#underscoreize-options
+    "JSON_UNDERSCOREIZE": {
+        "no_underscore_before_number": True,
+    },
 }
 
 # dj_rest_auth
@@ -183,8 +188,10 @@ SIMPLE_JWT = {
 }
 
 # serializer
-REST_AUTH_SERIALIZERS = {"JWT_SERIALIZER_WITH_EXPIRATION": "prj_auth.serializers.LoginSerializer"}
-
+REST_AUTH_SERIALIZERS = {
+    "JWT_SERIALIZER_WITH_EXPIRATION": "prj_auth.serializers.LoginResponseSerializer",
+    "USER_DETAILS_SERIALIZER": "accounts.serializers.UserDetailSerializer",
+}
 
 # CSRF トークンのクッキー設定
 CSRF_TRUSTED_ORIGINS = config("CSRF_TRUSTED_ORIGINS", cast=lambda v: [s.strip() for s in v.split(",")])
