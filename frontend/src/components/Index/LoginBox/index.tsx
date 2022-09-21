@@ -13,7 +13,6 @@ import { messageAtom, authTokenAtom } from '@/lib/jotaiAtom';
 const LoginBox = () => {
   const [loading, setLoading] = useState(false);
   const [, addMessage] = useAtom(messageAtom);
-  const [authToken, setAuthToken] = useAtom(authTokenAtom);
 
   const {
     handleSubmit,

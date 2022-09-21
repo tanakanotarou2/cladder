@@ -1,70 +1,36 @@
 import type { NextPageWithLayout } from 'next';
-import LoginBox from '@/components/Index/LoginBox';
-import { Button, Container } from '@mui/material';
-import { useCookies } from 'react-cookie';
-
-import axios from 'axios';
-import { apiClient } from '@/lib/apiClient';
+import { Button } from '@mui/material';
+import { apiClient, login, logout, refreshToken } from '@/lib/apiClient';
 
 const Home: NextPageWithLayout = () => {
-  const login = () => {
-    apiClient.login.$post({
-      body: {
-        username: 'root',
-        password: 'hogehoge',
-      },
-    });
+  const _login = async () => {
+    const res = await login('root', 'hogehoge');
+    console.log(res);
   };
 
+  const _logout = async () => {
+    const res = await logout();
+    console.log(res);
+  };
   const ping = async () => {
-    const res = await apiClient.ping.$get();
+    const res = await apiClient.auth.ping.$get();
     console.log(res);
   };
-  const upd = async () => {
-    const res = await apiClient.user.$patch({body:{}});
+  const csrf = async () => {
+    const res = await apiClient.auth.csrf.$get();
     console.log(res);
   };
-  // const fetch_csrf = async () => {
-  //   const res = await apiClient.get('csrf/');
-  //   return res['data']['csrfToken'];
-  // };
-  //
-  // const update = async () => {
-  //   const csrf = await fetch_csrf();
-  //   console.log("cs",csrf);
-  //   const res = await apiClient.patch('user/', {},
-  //     {
-  //       withCredentials: true,
-  //       headers: {
-  //         'X-CSRFToken': csrf,
-  //       },
-  //     },
-  //   );
-  //   console.log(res);
-  // };
-  // const login = async () => {
-  //   const res = await apiClient.post('login/', {
-  //       username: 'root',
-  //       password: 'hogehoge',
-  //     },
-  //     {
-  //       headers: {
-  //         'Content-Type': 'application/json; charset=utf-8',
-  //       },
-  //       withCredentials: true,
-  //     });
-  //   console.log(res);
-  //
-  //   update();
-  //
-  // };
-  // login();
+  const refresh = async () => {
+    const res = await refreshToken();
+    console.log(res);
+  };
   return (
     <div>
-      <div>spam</div>
-      <Button onClick={login}>login</Button>
+      <Button onClick={_login}>login</Button>
+      <Button onClick={_logout}>logout</Button>
+      <Button onClick={refresh}>refresh</Button>
       <Button onClick={ping}>ping</Button>
-      <Button onClick={upd}>patch</Button>
+      <Button onClick={csrf}>csrf</Button>
     </div>
   );
 };

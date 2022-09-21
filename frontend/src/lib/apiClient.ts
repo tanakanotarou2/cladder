@@ -4,7 +4,7 @@ import api from '../api/$api';
 import { addMinutes, compareAsc } from 'date-fns';
 
 const SAFE_METHODS = ['GET', 'HEAD', 'OPTIONS', 'TRACE']; // RFC7231
-const appendSlash = (url: string | undefined) => {
+const appendSlash = (url: string) => {
   if (url && url[url.length - 1] !== '/') return url + '/';
   return url;
 };
@@ -20,24 +20,47 @@ export const apiClient = api(aspida(axios,
   }));
 
 
-let _csrfToken: string | null = null;
-/**
- * CSRFトークンの取得
+/* *********************************** */
+/* 認証関連
+ *
+ * TODO: 別モジュールにすると循環的に参照することにならないか？と思ったので、一旦ここで定義します。
+ * 改善方法としては
+ * - クラス化して apiClient を pass する
+ * - 他案募集...
+ * が考えられます。
  */
+
+/* CSRFトークンの取得 */
 const getCsrfToken = async () => {
-  if (_csrfToken) return _csrfToken!;
-  const res = await apiClient.csrf.$get();
-  // @ts-ignore
-  _csrfToken = res['csrfToken'];
-  return _csrfToken!;
+  const res = await apiClient.auth.csrf.$get();
+  return res['csrfToken'];
 };
 
+export const login = (username: string, password: string) => {
+  return apiClient.auth.login.$post({
+    body: {
+      username: username,
+      password: password,
+    },
+  }).then(res => {
+    const time = (new Date(res.accessTokenExpiration)).getTime();
+    localStorage.setItem('tokenExpireAt', String(time));
+    return res;
+  });
+  // TODO: エラー処理
+
+};
+
+export const logout = () => {
+  localStorage.removeItem('tokenExpireAt');
+  return apiClient.auth.logout.$post();
+};
 
 /**
  * トークンのリフレッシュ
- * アクセストークンの有効期限が短ければ、リフレッシュする
+ * アクセストークンの有効期限が短ければリフレッシュする
  */
-const refreshToken = async () => {
+export const refreshToken = async () => {
   const expiredAt = localStorage.getItem('tokenExpireAt');
   if (!expiredAt) return;
 
@@ -48,31 +71,37 @@ const refreshToken = async () => {
     localStorage.removeItem('tokenExpireAt');
 
     // @ts-ignore
-    const res = await apiClient.token.refresh.$post({ body: {} }).catch(reason => {
-      console.log('raise error');
-      console.log(reason);
-      localStorage.setItem('tokenExpireAt', expiredAt);
+    const res = await apiClient.auth.token.refresh.$post()
+      .catch(reason => {
+        console.log('raise error');
+        console.log(reason);
+        // TODO: 400 番台のエラーであれば削除したままにする
+        localStorage.setItem('tokenExpireAt', expiredAt);
 
-      return false;
-    });
-    // @ts-ignore
-    localStorage.setItem('tokenExpireAt', new Date(res['access_token_expiration']).getTime());
+        return null;
+      });
+    if (!res) return false;
+    const time = (new Date(res.accessTokenExpiration)).getTime();
+    localStorage.setItem('tokenExpireAt', String(time));
     return true;
   }
 };
 
+/* end 認証 */
+/* *********************************** */
+
 const EXCLUDE_REFRESH_PATHS = [
-  appendSlash(apiClient.token.refresh.$path())!,
-  appendSlash(apiClient.login.$path())!,
-  appendSlash(apiClient.csrf.$path())!,
+  appendSlash(apiClient.auth.token.refresh.$path()),
+  appendSlash(apiClient.auth.login.$path()),
+  appendSlash(apiClient.auth.csrf.$path()),
 ];
 
 axios.interceptors.request.use(async (config) => {
-  const isAppApiRequest = appendSlash(config.baseURL) == appendSlash(process.env.NEXT_PUBLIC_API_URI);
+  const isAppApiRequest = appendSlash(config.baseURL || '') == appendSlash(process.env.NEXT_PUBLIC_API_URI!);
 
   if (isAppApiRequest) {
     // 末尾にスラッシュなかったら追加
-    config.url = appendSlash(config.url) || '';
+    config.url = appendSlash(config.url!);
 
     if (EXCLUDE_REFRESH_PATHS.every(s => !s.endsWith(config.url!))) {
       await refreshToken();
