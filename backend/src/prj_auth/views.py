@@ -1,3 +1,5 @@
+from dj_rest_auth.jwt_auth import get_refresh_view
+from dj_rest_auth.views import LoginView as OrgLoginView
 from django.middleware.csrf import get_token
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
@@ -20,3 +22,39 @@ class CSRFView(APIView):
     @method_decorator(vary_on_cookie)
     def get(self, request, format=None):
         return Response({'csrfToken': get_token(request)})
+
+
+class LoginView(OrgLoginView):
+    # クライアントが session に認証情報を持っていても
+    # 再度ログインできるように authentication をスキップしています
+    authentication_classes = []
+
+
+# デフォルトのリフレッシュクラスを取得
+OrgRefreshViewCls = get_refresh_view()
+
+
+@extend_schema_view(
+    post=extend_schema(
+        request=None,
+        responses={200: inline_serializer(name='RefreshTokenResponse',
+                                          fields={'access_token_expiration':
+                                                      serializers.DateTimeField(help_text="新しいトークンの有効期限")}
+                                          )},
+        description="アクセストークンをリフレッシュします"),
+)
+class RefreshView(OrgRefreshViewCls):
+    # アクセストークンが切れていても、リフレッシュトークンが有効期限内であれば
+    # リフレッシュしたいので、authentication をスキップしています
+    authentication_classes = []
+
+    def finalize_response(self, request, response, *args, **kwargs):
+        res = super().finalize_response(request, response, *args, **kwargs)
+        if res.status_code != 200: return res
+
+        # drop tokens
+        for key in ['access', 'refresh']:
+            if key in res.data:
+                del res.data[key]
+
+        return res

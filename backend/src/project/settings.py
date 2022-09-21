@@ -168,6 +168,7 @@ REST_FRAMEWORK = {
 # dj_rest_auth
 # ==============================================================
 
+# jwt の設定
 REST_USE_JWT = True
 JWT_AUTH_COOKIE = 'jwt-token'
 JWT_AUTH_REFRESH_COOKIE = 'jwt-refresh-token'
@@ -175,16 +176,24 @@ JWT_AUTH_COOKIE_USE_CSRF = True
 JWT_AUTH_HTTPONLY = True
 JWT_AUTH_SAMESITE = config('COOKIE_SAMESITE', default='None')
 JWT_AUTH_SECURE = config('COOKIE_SECURE', cast=bool, default=True)
+JWT_AUTH_RETURN_EXPIRATION = True  # ログイン時のレスポンスに有効期限を含める
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=config('ACCESS_TOKEN_LIFETIME_MINUTES', cast=int,default=60)),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=config('REFRESH_TOKEN_LIFETIME_DAYS', cast=int, default=30)),
+    'ROTATE_REFRESH_TOKENS':True,
 }
+
+# serializer
+REST_AUTH_SERIALIZERS = {
+    'JWT_SERIALIZER_WITH_EXPIRATION': 'prj_auth.serializers.LoginSerializer'
+}
+
 
 # CSRF トークンのクッキー設定
 CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS', cast=lambda v: [s.strip() for s in v.split(',')])
 CSRF_COOKIE_SAMESITE = config('COOKIE_SAMESITE', default='None')
 CSRF_COOKIE_SECURE = config('COOKIE_SECURE', cast=bool, default=True)
-
 
 # spectacular (API document)
 # https://drf-spectacular.readthedocs.io/en/latest/settings.html
