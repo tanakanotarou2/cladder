@@ -23,7 +23,7 @@ export const apiClient = api(aspida(axios,
 /* *********************************** */
 /* 認証関連
  *
- * TODO: 別モジュールにすると循環的に参照することにならないか？と思ったので、一旦ここで定義します。
+ * Note: 別モジュールにすると循環的に参照することにならないか？と思ったので、一旦ここで定義します。
  * 改善方法としては
  * - クラス化して apiClient を pass する
  * - 他案募集...
@@ -45,7 +45,7 @@ export const login = (username: string, password: string) => {
   }).then(res => {
     const time = (new Date(res.accessTokenExpiration)).getTime();
     localStorage.setItem('tokenExpireAt', String(time));
-    return res;
+    return res.user;
   });
   // TODO: エラー処理
 
@@ -61,6 +61,7 @@ export const logout = () => {
  * アクセストークンの有効期限が短ければリフレッシュする
  */
 export const refreshToken = async () => {
+  console.log("called refresh!");
   const expiredAt = localStorage.getItem('tokenExpireAt');
   if (!expiredAt) return;
 
