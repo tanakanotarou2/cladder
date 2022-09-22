@@ -1,53 +1,59 @@
 /* eslint-disable */
-export type Choice = {
+import type { ReadStream } from 'fs'
+
+export type CSRFResponse = {
+  csrfToken: string
+}
+
+export type LoginRequest = {
+  username?: string | undefined
+  email?: string | undefined
+  password: string
+}
+
+/** ログインレスポンス */
+export type LoginResponse = {
+  user: UserDetail
+
+  /** アクセストークンの有効期限 */
+  accessTokenExpiration: string
+  /** リフレッシュトークンの有効期限 */
+  refreshTokenExpiration: string
+}
+
+/** ユーザー情報。ユーザー本人及び上位権限者のみ参照できる情報です */
+export type PatchedUserDetailRequest = {
+  firstName?: string | undefined
+  lastName?: string | undefined
+  profileIcon?: (File | ReadStream) | null | undefined
+}
+
+export type PingResponse = {
+  result: string
+}
+
+export type RefreshTokenResponse = {
+  /** 新しいトークンの有効期限 */
+  accessTokenExpiration: string
+}
+
+export type RestAuthDetail = {
+  detail: string
+}
+
+/** ユーザー情報。ユーザー本人及び上位権限者のみ参照できる情報です */
+export type UserDetail = {
   id: number
-  choice_text: string
-  votes: number
-  question: number
+  /** この項目は必須です。半角アルファベット、半角数字、@/./+/-/_ で150文字以下にしてください。 */
+  username: string
+  firstName?: string | undefined
+  lastName?: string | undefined
+  profileIcon?: string | null | undefined
 }
 
-export type ChoiceRequest = {
-  choice_text: string
-}
-
-export type PaginatedChoiceList = {
-  count?: number | undefined
-  next?: string | null | undefined
-  previous?: string | null | undefined
-  results?: Choice[] | undefined
-}
-
-export type PaginatedQuestionDetailList = {
-  count?: number | undefined
-  next?: string | null | undefined
-  previous?: string | null | undefined
-  results?: QuestionDetail[] | undefined
-}
-
-export type PatchedChoiceRequest = {
-  choice_text?: string | undefined
-}
-
-export type PatchedQuestionUpdateRequest = {
-  pub_date?: string | undefined
-  question_text?: string | undefined
-}
-
-export type Question = {
-  id: number
-  question_text: string
-  pub_date: string
-}
-
-export type QuestionDetail = {
-  id: number
-  choice_set: Choice[]
-  question_text: string
-  pub_date: string
-}
-
-export type QuestionDetailRequest = {
-  choice_set: ChoiceRequest[]
-  question_text: string
-  pub_date: string
+/** ユーザー情報。ユーザー本人及び上位権限者のみ参照できる情報です */
+export type UserDetailRequest = {
+  firstName?: string | undefined
+  lastName?: string | undefined
+  profileIcon?: (File | ReadStream) | null | undefined
 }

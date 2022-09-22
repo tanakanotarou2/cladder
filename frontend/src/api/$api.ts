@@ -1,105 +1,188 @@
 import type { AspidaClient, BasicHeaders } from 'aspida'
 import { dataToURLString } from 'aspida'
-import type { Methods as Methods0 } from './polls/questions'
-import type { Methods as Methods1 } from './polls/questions/_id@number'
-import type { Methods as Methods2 } from './polls/questions/_question_pk@number/choices'
-import type { Methods as Methods3 } from './polls/questions/_question_pk@number/choices/_id@number'
-import type { Methods as Methods4 } from './polls/questions/_question_pk@number/choices/_id@number/upvote'
-import type { Methods as Methods5 } from './schema'
+import type { Methods as Methods0 } from './auth/csrf'
+import type { Methods as Methods1 } from './auth/login'
+import type { Methods as Methods2 } from './auth/login_user'
+import type { Methods as Methods3 } from './auth/logout'
+import type { Methods as Methods4 } from './auth/ping'
+import type { Methods as Methods5 } from './auth/token/refresh'
+import type { Methods as Methods6 } from './schema'
 
 const api = <T>({ baseURL, fetch }: AspidaClient<T>) => {
   const prefix = (baseURL === undefined ? '' : baseURL).replace(/\/$/, '')
-  const PATH0 = '/polls/questions'
-  const PATH1 = '/choices'
-  const PATH2 = '/upvote'
-  const PATH3 = '/schema'
+  const PATH0 = '/auth/csrf'
+  const PATH1 = '/auth/login'
+  const PATH2 = '/auth/login_user'
+  const PATH3 = '/auth/logout'
+  const PATH4 = '/auth/ping'
+  const PATH5 = '/auth/token/refresh'
+  const PATH6 = '/schema'
   const GET = 'GET'
   const POST = 'POST'
-  const DELETE = 'DELETE'
+  const PUT = 'PUT'
   const PATCH = 'PATCH'
 
   return {
-    polls: {
-      questions: {
-        _id: (val2: number) => {
-          const prefix2 = `${PATH0}/${val2}`
-
-          return {
-            get: (option?: { config?: T | undefined } | undefined) =>
-              fetch<Methods1['get']['resBody'], BasicHeaders, Methods1['get']['status']>(prefix, prefix2, GET, option).json(),
-            $get: (option?: { config?: T | undefined } | undefined) =>
-              fetch<Methods1['get']['resBody'], BasicHeaders, Methods1['get']['status']>(prefix, prefix2, GET, option).json().then(r => r.body),
-            patch: (option: { body: Methods1['patch']['reqBody'], config?: T | undefined }) =>
-              fetch<Methods1['patch']['resBody'], BasicHeaders, Methods1['patch']['status']>(prefix, prefix2, PATCH, option, 'FormData').json(),
-            $patch: (option: { body: Methods1['patch']['reqBody'], config?: T | undefined }) =>
-              fetch<Methods1['patch']['resBody'], BasicHeaders, Methods1['patch']['status']>(prefix, prefix2, PATCH, option, 'FormData').json().then(r => r.body),
-            /**
-             * Questionデータを削除します
-             */
-            delete: (option?: { config?: T | undefined } | undefined) =>
-              fetch<void, BasicHeaders, Methods1['delete']['status']>(prefix, prefix2, DELETE, option).send(),
-            /**
-             * Questionデータを削除します
-             */
-            $delete: (option?: { config?: T | undefined } | undefined) =>
-              fetch<void, BasicHeaders, Methods1['delete']['status']>(prefix, prefix2, DELETE, option).send().then(r => r.body),
-            $path: () => `${prefix}${prefix2}`
-          }
-        },
-        _question_pk: (val2: number) => {
-          const prefix2 = `${PATH0}/${val2}`
-
-          return {
-            choices: {
-              _id: (val4: number) => {
-                const prefix4 = `${prefix2}${PATH1}/${val4}`
-
-                return {
-                  upvote: {
-                    post: (option?: { config?: T | undefined } | undefined) =>
-                      fetch<Methods4['post']['resBody'], BasicHeaders, Methods4['post']['status']>(prefix, `${prefix4}${PATH2}`, POST, option).json(),
-                    $post: (option?: { config?: T | undefined } | undefined) =>
-                      fetch<Methods4['post']['resBody'], BasicHeaders, Methods4['post']['status']>(prefix, `${prefix4}${PATH2}`, POST, option).json().then(r => r.body),
-                    $path: () => `${prefix}${prefix4}${PATH2}`
-                  },
-                  get: (option?: { config?: T | undefined } | undefined) =>
-                    fetch<Methods3['get']['resBody'], BasicHeaders, Methods3['get']['status']>(prefix, prefix4, GET, option).json(),
-                  $get: (option?: { config?: T | undefined } | undefined) =>
-                    fetch<Methods3['get']['resBody'], BasicHeaders, Methods3['get']['status']>(prefix, prefix4, GET, option).json().then(r => r.body),
-                  patch: (option: { body: Methods3['patch']['reqBody'], config?: T | undefined }) =>
-                    fetch<Methods3['patch']['resBody'], BasicHeaders, Methods3['patch']['status']>(prefix, prefix4, PATCH, option, 'FormData').json(),
-                  $patch: (option: { body: Methods3['patch']['reqBody'], config?: T | undefined }) =>
-                    fetch<Methods3['patch']['resBody'], BasicHeaders, Methods3['patch']['status']>(prefix, prefix4, PATCH, option, 'FormData').json().then(r => r.body),
-                  delete: (option?: { config?: T | undefined } | undefined) =>
-                    fetch<void, BasicHeaders, Methods3['delete']['status']>(prefix, prefix4, DELETE, option).send(),
-                  $delete: (option?: { config?: T | undefined } | undefined) =>
-                    fetch<void, BasicHeaders, Methods3['delete']['status']>(prefix, prefix4, DELETE, option).send().then(r => r.body),
-                  $path: () => `${prefix}${prefix4}`
-                }
-              },
-              get: (option?: { query?: Methods2['get']['query'] | undefined, config?: T | undefined } | undefined) =>
-                fetch<Methods2['get']['resBody'], BasicHeaders, Methods2['get']['status']>(prefix, `${prefix2}${PATH1}`, GET, option).json(),
-              $get: (option?: { query?: Methods2['get']['query'] | undefined, config?: T | undefined } | undefined) =>
-                fetch<Methods2['get']['resBody'], BasicHeaders, Methods2['get']['status']>(prefix, `${prefix2}${PATH1}`, GET, option).json().then(r => r.body),
-              post: (option: { body: Methods2['post']['reqBody'], config?: T | undefined }) =>
-                fetch<Methods2['post']['resBody'], BasicHeaders, Methods2['post']['status']>(prefix, `${prefix2}${PATH1}`, POST, option, 'FormData').json(),
-              $post: (option: { body: Methods2['post']['reqBody'], config?: T | undefined }) =>
-                fetch<Methods2['post']['resBody'], BasicHeaders, Methods2['post']['status']>(prefix, `${prefix2}${PATH1}`, POST, option, 'FormData').json().then(r => r.body),
-              $path: (option?: { method?: 'get' | undefined; query: Methods2['get']['query'] } | undefined) =>
-                `${prefix}${prefix2}${PATH1}${option && option.query ? `?${dataToURLString(option.query)}` : ''}`
-            }
-          }
-        },
-        get: (option?: { query?: Methods0['get']['query'] | undefined, config?: T | undefined } | undefined) =>
+    auth: {
+      csrf: {
+        /**
+         * CSRFトークンを取得します
+         */
+        get: (option?: { config?: T | undefined } | undefined) =>
           fetch<Methods0['get']['resBody'], BasicHeaders, Methods0['get']['status']>(prefix, PATH0, GET, option).json(),
-        $get: (option?: { query?: Methods0['get']['query'] | undefined, config?: T | undefined } | undefined) =>
+        /**
+         * CSRFトークンを取得します
+         */
+        $get: (option?: { config?: T | undefined } | undefined) =>
           fetch<Methods0['get']['resBody'], BasicHeaders, Methods0['get']['status']>(prefix, PATH0, GET, option).json().then(r => r.body),
-        post: (option: { body: Methods0['post']['reqBody'], config?: T | undefined }) =>
-          fetch<Methods0['post']['resBody'], BasicHeaders, Methods0['post']['status']>(prefix, PATH0, POST, option, 'FormData').json(),
-        $post: (option: { body: Methods0['post']['reqBody'], config?: T | undefined }) =>
-          fetch<Methods0['post']['resBody'], BasicHeaders, Methods0['post']['status']>(prefix, PATH0, POST, option, 'FormData').json().then(r => r.body),
-        $path: (option?: { method?: 'get' | undefined; query: Methods0['get']['query'] } | undefined) =>
-          `${prefix}${PATH0}${option && option.query ? `?${dataToURLString(option.query)}` : ''}`
+        $path: () => `${prefix}${PATH0}`
+      },
+      login: {
+        /**
+         * Check the credentials and return the REST Token
+         * if the credentials are valid and authenticated.
+         * Calls Django Auth login method to register User ID
+         * in Django session framework
+         *
+         * Accept the following POST parameters: username, password
+         * Return the REST Framework Token Object's key.
+         */
+        post: (option: { body: Methods1['post']['reqBody'], config?: T | undefined }) =>
+          fetch<Methods1['post']['resBody'], BasicHeaders, Methods1['post']['status']>(prefix, PATH1, POST, option, 'FormData').json(),
+        /**
+         * Check the credentials and return the REST Token
+         * if the credentials are valid and authenticated.
+         * Calls Django Auth login method to register User ID
+         * in Django session framework
+         *
+         * Accept the following POST parameters: username, password
+         * Return the REST Framework Token Object's key.
+         */
+        $post: (option: { body: Methods1['post']['reqBody'], config?: T | undefined }) =>
+          fetch<Methods1['post']['resBody'], BasicHeaders, Methods1['post']['status']>(prefix, PATH1, POST, option, 'FormData').json().then(r => r.body),
+        $path: () => `${prefix}${PATH1}`
+      },
+      login_user: {
+        /**
+         * Reads and updates UserModel fields
+         * Accepts GET, PUT, PATCH methods.
+         *
+         * Default accepted fields: username, first_name, last_name
+         * Default display fields: pk, username, email, first_name, last_name
+         * Read-only fields: pk, email
+         *
+         * Returns UserModel fields.
+         */
+        get: (option?: { config?: T | undefined } | undefined) =>
+          fetch<Methods2['get']['resBody'], BasicHeaders, Methods2['get']['status']>(prefix, PATH2, GET, option).json(),
+        /**
+         * Reads and updates UserModel fields
+         * Accepts GET, PUT, PATCH methods.
+         *
+         * Default accepted fields: username, first_name, last_name
+         * Default display fields: pk, username, email, first_name, last_name
+         * Read-only fields: pk, email
+         *
+         * Returns UserModel fields.
+         */
+        $get: (option?: { config?: T | undefined } | undefined) =>
+          fetch<Methods2['get']['resBody'], BasicHeaders, Methods2['get']['status']>(prefix, PATH2, GET, option).json().then(r => r.body),
+        /**
+         * Reads and updates UserModel fields
+         * Accepts GET, PUT, PATCH methods.
+         *
+         * Default accepted fields: username, first_name, last_name
+         * Default display fields: pk, username, email, first_name, last_name
+         * Read-only fields: pk, email
+         *
+         * Returns UserModel fields.
+         */
+        put: (option: { body: Methods2['put']['reqBody'], config?: T | undefined }) =>
+          fetch<Methods2['put']['resBody'], BasicHeaders, Methods2['put']['status']>(prefix, PATH2, PUT, option, 'FormData').json(),
+        /**
+         * Reads and updates UserModel fields
+         * Accepts GET, PUT, PATCH methods.
+         *
+         * Default accepted fields: username, first_name, last_name
+         * Default display fields: pk, username, email, first_name, last_name
+         * Read-only fields: pk, email
+         *
+         * Returns UserModel fields.
+         */
+        $put: (option: { body: Methods2['put']['reqBody'], config?: T | undefined }) =>
+          fetch<Methods2['put']['resBody'], BasicHeaders, Methods2['put']['status']>(prefix, PATH2, PUT, option, 'FormData').json().then(r => r.body),
+        /**
+         * Reads and updates UserModel fields
+         * Accepts GET, PUT, PATCH methods.
+         *
+         * Default accepted fields: username, first_name, last_name
+         * Default display fields: pk, username, email, first_name, last_name
+         * Read-only fields: pk, email
+         *
+         * Returns UserModel fields.
+         */
+        patch: (option: { body: Methods2['patch']['reqBody'], config?: T | undefined }) =>
+          fetch<Methods2['patch']['resBody'], BasicHeaders, Methods2['patch']['status']>(prefix, PATH2, PATCH, option, 'FormData').json(),
+        /**
+         * Reads and updates UserModel fields
+         * Accepts GET, PUT, PATCH methods.
+         *
+         * Default accepted fields: username, first_name, last_name
+         * Default display fields: pk, username, email, first_name, last_name
+         * Read-only fields: pk, email
+         *
+         * Returns UserModel fields.
+         */
+        $patch: (option: { body: Methods2['patch']['reqBody'], config?: T | undefined }) =>
+          fetch<Methods2['patch']['resBody'], BasicHeaders, Methods2['patch']['status']>(prefix, PATH2, PATCH, option, 'FormData').json().then(r => r.body),
+        $path: () => `${prefix}${PATH2}`
+      },
+      logout: {
+        /**
+         * Calls Django logout method and delete the Token object
+         * assigned to the current User object.
+         *
+         * Accepts/Returns nothing.
+         */
+        post: (option?: { config?: T | undefined } | undefined) =>
+          fetch<Methods3['post']['resBody'], BasicHeaders, Methods3['post']['status']>(prefix, PATH3, POST, option).json(),
+        /**
+         * Calls Django logout method and delete the Token object
+         * assigned to the current User object.
+         *
+         * Accepts/Returns nothing.
+         */
+        $post: (option?: { config?: T | undefined } | undefined) =>
+          fetch<Methods3['post']['resBody'], BasicHeaders, Methods3['post']['status']>(prefix, PATH3, POST, option).json().then(r => r.body),
+        $path: () => `${prefix}${PATH3}`
+      },
+      ping: {
+        /**
+         * 認証検証用のエンドポイント
+         */
+        get: (option?: { config?: T | undefined } | undefined) =>
+          fetch<Methods4['get']['resBody'], BasicHeaders, Methods4['get']['status']>(prefix, PATH4, GET, option).json(),
+        /**
+         * 認証検証用のエンドポイント
+         */
+        $get: (option?: { config?: T | undefined } | undefined) =>
+          fetch<Methods4['get']['resBody'], BasicHeaders, Methods4['get']['status']>(prefix, PATH4, GET, option).json().then(r => r.body),
+        $path: () => `${prefix}${PATH4}`
+      },
+      token: {
+        refresh: {
+          /**
+           * アクセストークンをリフレッシュします
+           */
+          post: (option?: { config?: T | undefined } | undefined) =>
+            fetch<Methods5['post']['resBody'], BasicHeaders, Methods5['post']['status']>(prefix, PATH5, POST, option).json(),
+          /**
+           * アクセストークンをリフレッシュします
+           */
+          $post: (option?: { config?: T | undefined } | undefined) =>
+            fetch<Methods5['post']['resBody'], BasicHeaders, Methods5['post']['status']>(prefix, PATH5, POST, option).json().then(r => r.body),
+          $path: () => `${prefix}${PATH5}`
+        }
       }
     },
     schema: {
@@ -109,18 +192,18 @@ const api = <T>({ baseURL, fetch }: AspidaClient<T>) => {
        * - YAML: application/vnd.oai.openapi
        * - JSON: application/vnd.oai.openapi+json
        */
-      get: (option?: { query?: Methods5['get']['query'] | undefined, config?: T | undefined } | undefined) =>
-        fetch<Methods5['get']['resBody'], BasicHeaders, Methods5['get']['status']>(prefix, PATH3, GET, option).json(),
+      get: (option?: { query?: Methods6['get']['query'] | undefined, config?: T | undefined } | undefined) =>
+        fetch<Methods6['get']['resBody'], BasicHeaders, Methods6['get']['status']>(prefix, PATH6, GET, option).json(),
       /**
        * OpenApi3 schema for this API. Format can be selected via content negotiation.
        *
        * - YAML: application/vnd.oai.openapi
        * - JSON: application/vnd.oai.openapi+json
        */
-      $get: (option?: { query?: Methods5['get']['query'] | undefined, config?: T | undefined } | undefined) =>
-        fetch<Methods5['get']['resBody'], BasicHeaders, Methods5['get']['status']>(prefix, PATH3, GET, option).json().then(r => r.body),
-      $path: (option?: { method?: 'get' | undefined; query: Methods5['get']['query'] } | undefined) =>
-        `${prefix}${PATH3}${option && option.query ? `?${dataToURLString(option.query)}` : ''}`
+      $get: (option?: { query?: Methods6['get']['query'] | undefined, config?: T | undefined } | undefined) =>
+        fetch<Methods6['get']['resBody'], BasicHeaders, Methods6['get']['status']>(prefix, PATH6, GET, option).json().then(r => r.body),
+      $path: (option?: { method?: 'get' | undefined; query: Methods6['get']['query'] } | undefined) =>
+        `${prefix}${PATH6}${option && option.query ? `?${dataToURLString(option.query)}` : ''}`
     }
   }
 }
