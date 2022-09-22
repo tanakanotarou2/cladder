@@ -9,7 +9,7 @@ class UserSerializer(ModelSerializer):
     class Meta:
         model = User
         fields = ["id", "first_name", "last_name", "profile_icon"]
-        read_only_fields=["id"]
+        read_only_fields = ["id"]
 
 
 class UserDetailSerializer(ModelSerializer):
@@ -18,4 +18,4 @@ class UserDetailSerializer(ModelSerializer):
     class Meta:
         model = User
         fields = ["id", "username", "first_name", "last_name", "profile_icon"]
-        read_only_fields=["id","username"]
+        read_only_fields = ["id", "username"]
