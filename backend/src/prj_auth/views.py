@@ -9,6 +9,7 @@ from django.views.decorators.vary import vary_on_cookie
 from drf_spectacular.utils import extend_schema, extend_schema_view, inline_serializer
 from rest_framework import serializers
 from rest_framework.authentication import BaseAuthentication
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -18,15 +19,29 @@ from prj_auth.serializers import LoginResponseSerializer
 @extend_schema_view(
     get=extend_schema(
         responses={200: inline_serializer(name="CSRFResponse", fields={"csrfToken": serializers.CharField()})},
-        description="CSRFトークンを取得します",
     ),
 )
 class CSRFView(APIView):
+    # authentication_classes = [] #type:None
+    permission_classes = [AllowAny]
+
     # クッキーごとにキャッシュするのはありかもしれない
     @method_decorator(cache_page(10))
     @method_decorator(vary_on_cookie)
     def get(self, request, format=None):
+        """CSRFトークンを取得します"""
         return Response({"csrfToken": get_token(request)})
+
+
+@extend_schema_view(
+    get=extend_schema(
+        responses={200: inline_serializer(name="PingResponse", fields={"result": serializers.CharField()})},
+    ),
+)
+class PingView(APIView):
+    def get(self, request, format=None):
+        """認証検証用のエンドポイント"""
+        return Response({"result": "ok"})
 
 
 @extend_schema_view(

@@ -18,9 +18,10 @@ urlpatterns = [
 ]
 
 urlpatterns += [
-    path("api/login/", prj_auth_views.LoginView.as_view(), name="rest_login"),
-    path("api/logout/", LogoutView.as_view(), name="rest_logout"),
-    path("api/token/refresh/", prj_auth_views.RefreshView.as_view(), name="token_refresh"),
-    path("api/csrf/", prj_auth_views.CSRFView.as_view()),
-    path("api/user/", UserDetailsView.as_view(), name="rest_user_details"),
+    path("api/auth/login/", prj_auth_views.LoginView.as_view(), name="rest_login"),
+    path("api/auth/logout/", LogoutView.as_view(), name="rest_logout"),
+    path("api/auth/token/refresh/", prj_auth_views.RefreshView.as_view(), name="token_refresh"),
+    path("api/auth/csrf/", prj_auth_views.CSRFView.as_view(),name="csrf_token"),
+    path("api/auth/ping/", prj_auth_views.PingView.as_view(), name="ping"),
+    path('api/auth/login_user/', UserDetailsView.as_view(), name='rest_user_details'),
 ]

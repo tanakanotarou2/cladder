@@ -145,7 +145,7 @@ CORS_ALLOW_CREDENTIALS = True
 # ==============================================================
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly",
+        "rest_framework.permissions.IsAuthenticated",
     ],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     # page base
@@ -206,6 +206,11 @@ SPECTACULAR_SETTINGS = {
         "rest_framework.permissions.AllowAny" if DEBUG else "rest_framework.permissions.IsAdminUser"
     ],
     "SWAGGER_UI_SETTINGS": {"persistAuthorization": True, "url": "http://127.0.0.1:8000/api/schema/"},
+
+    # to camelCase
+    'CAMELIZE_NAMES': True,
+    'POSTPROCESSING_HOOKS': ['drf_spectacular.contrib.djangorestframework_camel_case.camelize_serializer_fields'],
+
     # request, response の オブジェクトを分ける. frontend で生成する create アクション(POST) の型に readonly field が含まれなくなる。
     "COMPONENT_SPLIT_REQUEST": True,
     # フロントエンドから参照するスキーマ情報には `/api/` を含めてないようにしたかったため、
