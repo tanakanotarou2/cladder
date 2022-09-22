@@ -9,15 +9,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 load_dotenv()
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
+SECRET_KEY = config("DJ_SECRET_KEY")
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("DJ_SECRET_KEY")
+DEBUG = config("DEBUG", cast=bool, default=False)
 
-DEBUG = os.getenv("DEBUG", False)
-
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
+ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=lambda v: [s.strip() for s in v.split(",")])
 
 # Application definition
 
@@ -103,13 +99,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # ==============================================================
 
 LANGUAGE_CODE = "ja"
-
 TIME_ZONE = "Asia/Tokyo"
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
@@ -138,7 +130,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # CORS
 # ==============================================================
-CORS_ORIGIN_WHITELIST = os.getenv("CORS_ORIGIN_WHITELIST", "").split(",")
+CORS_ORIGIN_WHITELIST = config("CORS_ORIGIN_WHITELIST", cast=lambda v: [s.strip() for s in v.split(",")])
 CORS_ALLOW_CREDENTIALS = True
 
 # REST framework
@@ -211,9 +203,11 @@ SPECTACULAR_SETTINGS = {
     "POSTPROCESSING_HOOKS": ["drf_spectacular.contrib.djangorestframework_camel_case.camelize_serializer_fields"],
     # request, response の オブジェクトを分ける. frontend で生成する create アクション(POST) の型に readonly field が含まれなくなる。
     "COMPONENT_SPLIT_REQUEST": True,
-    # フロントエンドから参照するスキーマ情報には `/api/` を含めてないようにしたかったため、
-    # 出力するスキーマの prefix: `/api/` を除く
-    # TODO: これをいれていると swagger の リクエスト先 URL も /api/ が省かれて 404 エラーとなる。
-    #       設定方法がわからなかったので、代替案として env で切り替えられるようにしている。 swagger url の設定方法を確認する
-    "SCHEMA_PATH_PREFIX_TRIM": "/api/" if os.getenv("ENABLE_SCHEMA_PATH_PREFIX_TRIM", "1") == "1" else "",
+    # フロントエンドから参照するスキーマ情報には `/api/` を含めないようにしたかったため、
+    # 出力するスキーマの prefix: `/api/` を除く設定をする。
+    # 注) これの副作用として swagger の リクエスト先 URL も /api/ が省かれて 404 エラーとなる。
+    #     swagger の設定方法がわからなかったので、env で切り替えられるようにしている。
+    "SCHEMA_PATH_PREFIX_TRIM": "/api/"
+    if not config("DISABLE_SCHEMA_PATH_PREFIX_TRIM", cast=bool, default=False)
+    else "",
 }
