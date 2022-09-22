@@ -23,11 +23,8 @@ export const apiClient = api(aspida(axios,
 /* *********************************** */
 /* 認証関連
  *
- * Note: 別モジュールにすると循環的に参照することにならないか？と思ったので、一旦ここで定義します。
- * 改善方法としては
- * - クラス化して apiClient を pass する
- * - 他案募集...
- * が考えられます。
+ * TODO: 別モジュールにしたいのですが、どうすればよいかわからず。
+ *       一旦ここで定義します。
  */
 
 /* CSRFトークンの取得 */
@@ -47,8 +44,6 @@ export const login = (username: string, password: string) => {
     localStorage.setItem('tokenExpireAt', String(time));
     return res.user;
   });
-  // TODO: エラー処理
-
 };
 
 export const logout = () => {
@@ -56,14 +51,13 @@ export const logout = () => {
   return apiClient.auth.logout.$post();
 };
 
-/**
+/*
  * トークンのリフレッシュ
  * アクセストークンの有効期限が短ければリフレッシュする
  */
-export const refreshToken = async () => {
-  console.log("called refresh!");
+export const refreshToken = () => {
   const expiredAt = localStorage.getItem('tokenExpireAt');
-  if (!expiredAt) return;
+  if (!expiredAt) return null;
 
   const expireAt = new Date(Number(expiredAt));
   const dt = addMinutes(new Date(), 5); // offset. 有効期限切れがこれより短ければリフレッシュする
@@ -71,21 +65,16 @@ export const refreshToken = async () => {
   if (compareAsc(expireAt, dt) <= 0) {
     localStorage.removeItem('tokenExpireAt');
 
-    // @ts-ignore
-    const res = await apiClient.auth.token.refresh.$post()
+    return apiClient.auth.token.refresh.$post()
+      .then(res => {
+        const time = (new Date(res.accessTokenExpiration)).getTime();
+        localStorage.setItem('tokenExpireAt', String(time));
+      })
       .catch(reason => {
-        console.log('raise error');
-        console.log(reason);
-        // TODO: 400 番台のエラーであれば削除したままにする
-        localStorage.setItem('tokenExpireAt', expiredAt);
-
-        return null;
+        // console.log('refresh error', reason);
       });
-    if (!res) return false;
-    const time = (new Date(res.accessTokenExpiration)).getTime();
-    localStorage.setItem('tokenExpireAt', String(time));
-    return true;
   }
+  return null;
 };
 
 /* end 認証 */

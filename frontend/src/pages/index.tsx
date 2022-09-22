@@ -10,7 +10,7 @@ const Home: NextPageWithLayout = () => {
   const [, setCurrentUser] = useAtom(currentUserAtom);
   const _login = async () => {
     try {
-      const res = await login('root', 'hogehoge');
+      const res = await login('root', 'spamspam');
       setCurrentUser(res);
     } catch {
       setCurrentUser(null);

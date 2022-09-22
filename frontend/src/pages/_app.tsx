@@ -5,19 +5,15 @@ import { Hydrate, QueryClient, QueryClientProvider } from 'react-query';
 import React, { useEffect, useState } from 'react';
 import { useAtomsDebugValue } from 'jotai/devtools';
 
-import { Provider as JotaiProvider } from 'jotai';
+import { Provider as JotaiProvider, useAtom } from 'jotai';
 
 import { SnackbarKey, SnackbarProvider } from 'notistack';
 import { IconButton, styled } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { defaultTheme } from '@/lib/themes';
 import DefaultLayout from '@/components/layouts/DefaultLayout';
-
-import { useAtom } from 'jotai';
 import { currentUserAtom } from '@/lib/jotaiAtom';
 import { apiClient, refreshToken } from '@/lib/apiClient';
-
-import { UserDetail } from '../api/@types';
 
 
 // react-query の設定
@@ -37,12 +33,9 @@ const DebugAtoms = () => {
   return null;
 };
 
-import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { useAspidaQuery } from '@aspida/react-query';
-
 /*
  * マウント時 認証
- * src: https://zenn.dev/catnose99/articles/2169dae14b58b6
+ * 参考: https://zenn.dev/catnose99/articles/2169dae14b58b6
  */
 function AppInit() {
   // グローバルステートにユーザー情報をセットするためのもの
