@@ -1,60 +1,45 @@
 import { Box, Button, Container, Paper, Stack, TextField, Typography } from '@mui/material';
-import { apiClient } from '@/lib/apiClient';
 import { Controller, useForm } from 'react-hook-form';
 
 import { useMutation } from 'react-query';
 import { useState } from 'react';
-// import { TokenObtainPairRequest } from '../../../api/@types';
-import { AxiosError } from 'axios';
+import { LoginRequest } from '../../../api/@types';
 import FieldErrorMessages from '@/components/shared/FieldErrorMessages';
 import { useAtom } from 'jotai';
-import { messageAtom, authTokenAtom } from '@/lib/jotaiAtom';
+import { currentUserAtom, messageAtom } from '@/lib/jotaiAtom';
+import { login } from '@/lib/apiClient';
 
 const LoginBox = () => {
   const [loading, setLoading] = useState(false);
   const [, addMessage] = useAtom(messageAtom);
+  const [, setCurrentUser] = useAtom(currentUserAtom);
 
   const {
     handleSubmit,
     control,
     setError,
     formState: { errors },
-  } = useForm<TokenObtainPairRequest>();
+  } = useForm<LoginRequest>();
 
-  // function postLogin(body: TokenObtainPairRequest) {
-  //   return apiClient.auth.token.$post({ body });
-  // }
-
-  const mutation = useMutation(postLogin, {
-    // onSuccess: (res) => {
-    //   // TODO: ログイン後ページへ遷移
-    //   console.log(authToken);
-    //   console.log(res.access);
-    //   setAuthToken(res.access);
-    //   addMessage({ text: 'ごきげんよう', 'variant': 'success' });
-    // },
-    // onError: (error: AxiosError) => {
-    //   console.log('err', error);
-    //   addMessage({ text: '不明なエラー', 'variant': 'error' });
-    //   // const err: any = apiErrorHandler.putError(error);
-    //   // if (err instanceof SingleErrorMessage) {
-    //   //   addMessage({ text: err.message, 'variant': 'warning' });
-    //   // } else if (err instanceof FormErrors) {
-    //   //   setFormErrors(setError, err.errors);
-    //   // } else {
-    //   //   console.log('err', error);
-    //   //   addMessage({ text: '不明なエラー', 'variant': 'error' });
-    //   // }
-    // },
-    // onSettled: () => {
-    //   setLoading(false);
-    // },
-
+  const mutation = useMutation(login, {
+    onSuccess: (res) => {
+      // TODO: ログイン後ページへ遷移
+      setCurrentUser(res.user);
+      addMessage({ text: `ごきげんよう、${res.user.username} さん`, 'variant': 'success' });
+    },
+    onError: (error) => {
+      console.log('err', error);
+      // TODO: エラーメッセージをセット
+      addMessage({ text: '不明なエラー', 'variant': 'error' });
+    },
+    onSettled: () => {
+      setLoading(false);
+    },
   });
 
-  const onSubmit = (data: TokenObtainPairRequest) => {
-    // setLoading(true);
-    // mutation.mutate(data);
+  const onSubmit = (data: LoginRequest) => {
+    setLoading(true);
+    mutation.mutate(data);
   };
   return (
     <Container maxWidth='sm'>
