@@ -22,10 +22,10 @@ import { createTheme } from '@mui/material/styles';
 export const defaultTheme = createTheme({
   palette: {
     primary: {
-      main: '#1b5e20',
+      main: '#3949ab',
     },
     secondary: {
-      main: '#a41b1b',
+      main: '#f50057',
     },
     error: {
       main: '#f44336',

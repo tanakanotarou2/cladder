@@ -8,9 +8,6 @@ import CommonSnackbar from '@/components/shared/CommonSnackbar';
 // @ts-ignore
 const DefaultLayout = ({ children }) => {
   const router = useRouter();
-  const goCreate = () => {
-    router.push('/questions/new');
-  };
   const goHome = () => {
     router.push('/');
   };
