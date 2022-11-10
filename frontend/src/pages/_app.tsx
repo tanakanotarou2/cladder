@@ -96,7 +96,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       <JotaiProvider>
         <DebugAtoms />
         {/* https://react-query.tanstack.com/guides/ssr#using-nextjs */}
-        <Hydrate state={pageProps.dehydratedState}> {/* よくわかっていない. react-query のサンプルに有ったので追加 */}
+        <Hydrate state={pageProps.dehydratedState}> {/* TODO: よくわかっていない. react-query のサンプルに有ったので追加 */}
 
           <ThemeProvider theme={defaultTheme}>
             <SnackbarProvider
