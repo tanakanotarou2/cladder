@@ -8,11 +8,15 @@ import FieldErrorMessages from '@/components/shared/FieldErrorMessages';
 import { useAtom } from 'jotai';
 import { currentUserAtom, messageAtom } from '@/lib/jotaiAtom';
 import { login } from '@/lib/apiClient';
+import { preprocessApiError, reformatToHookFormStyle } from '@/lib/apiErrorHandle';
+import { AxiosError } from 'axios';
+import FormErrorMessages from '@/components/shared/FormErrorMessages';
 
 const LoginBox = () => {
   const [loading, setLoading] = useState(false);
   const [, addMessage] = useAtom(messageAtom);
   const [, setCurrentUser] = useAtom(currentUserAtom);
+  const [nonFieldErrors, setNonFieldErrors] = useState<string[] | null>(null);
 
   const {
     handleSubmit,
@@ -27,10 +31,18 @@ const LoginBox = () => {
       setCurrentUser(res.user);
       addMessage({ text: `ごきげんよう、${res.user.username} さん`, 'variant': 'success' });
     },
-    onError: (error) => {
-      console.log('err', error);
-      // TODO: エラーメッセージをセット
-      addMessage({ text: '不明なエラー', 'variant': 'error' });
+    onError: (error: AxiosError) => {
+      const formMsg = preprocessApiError(error);
+      if (!!formMsg) {
+        const msgs = reformatToHookFormStyle(formMsg);
+        for (const [key, value] of Object.entries(msgs)) {
+          // @ts-ignore
+          setError(key, value);
+        }
+        setNonFieldErrors(formMsg.nonFieldErrors);
+      } else {
+        addMessage({ text: '予期せぬエラーが発生しました。', 'variant': 'error' });
+      }
     },
     onSettled: () => {
       setLoading(false);
@@ -39,6 +51,7 @@ const LoginBox = () => {
 
   const onSubmit = (data: LoginRequest) => {
     setLoading(true);
+    setNonFieldErrors(null);
     mutation.mutate(data);
   };
   return (
@@ -89,6 +102,7 @@ const LoginBox = () => {
               />
               <FieldErrorMessages name='password' errors={errors} />
 
+              <FormErrorMessages errors={nonFieldErrors} />
               <Button
                 type='submit'
                 variant='contained'
