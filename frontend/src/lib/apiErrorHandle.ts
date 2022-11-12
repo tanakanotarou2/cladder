@@ -2,6 +2,19 @@ import { AxiosError } from 'axios';
 
 const NON_FIELD_ERROR_KEY = 'nonFieldErrors';
 
+/**
+ * API からのエラーメッセージを保有するクラス
+ */
+export class FormError {
+  fieldErrors: FieldError;
+  nonFieldErrors: string[] | null;
+
+  constructor(fieldErrors: FieldError, nonFieldMessages: string[] | null = null) {
+    this.fieldErrors = fieldErrors;
+    this.nonFieldErrors = nonFieldMessages;
+  }
+}
+
 export class ErrorHandler {
   beAbleToHandle(error: any): boolean {
     throw new Error('beAbleToHandle を実装してください');
@@ -14,15 +27,6 @@ export class ErrorHandler {
 
 type FieldError = { [key: string]: string[] | FieldError[] }
 
-export class FormError {
-  fieldErrors: FieldError;
-  nonFieldErrors: string[] | null;
-
-  constructor(fieldErrors: FieldError, nonFieldMessages: string[] | null = null) {
-    this.fieldErrors = fieldErrors;
-    this.nonFieldErrors = nonFieldMessages;
-  }
-}
 
 export class SingleErrorHandler extends ErrorHandler {
   beAbleToHandle(error: AxiosError): boolean {
@@ -64,9 +68,9 @@ export class FieldErrorHandler extends ErrorHandler {
 }
 
 /*
- * API のエラーに関する前処理
+ * API のエラーに関する前処理を行います
  *
- * API からのエラーメッセージがある場合は FormErrors を、
+ * API からのエラーメッセージがある場合は、エラーメッセージを保有する FormErrors を、
  * (通信エラーなどで) APIからのエラーメッセージがない場合は null を返します。
  */
 export const preprocessApiError = (error: AxiosError): FormError | null => {
@@ -77,13 +81,17 @@ export const preprocessApiError = (error: AxiosError): FormError | null => {
     console.debug('error', error);
   }
 
+  // TODO: これらの Handler は仮実装。
+  //       将来的に入れ子のエラーメッセージなどが想定されるので、再起的に FormError を構築するように
   if (fieldErrorHandler.beAbleToHandle(error)) return fieldErrorHandler.handle(error);
   if (simpleErrorHandler.beAbleToHandle(error)) return simpleErrorHandler.handle(error);
   return null;
 };
 
 /*
- * hookform/error-message でレンダリングするためのフォーマットに整形
+ * FormError のメッセージを hookform/error-message でレンダリングするためのフォーマットに整形する関数
+ * @param errors {FormError} API からのエラー情報
+ * @return {Object} field 名をキーとしてエラー情報のリストをもつオブジェクトを返します。
  */
 export const reformatToHookFormStyle = (errors: FormError) => {
   const res = Object();
@@ -95,6 +103,7 @@ export const reformatToHookFormStyle = (errors: FormError) => {
       }
     });
     // Note: メッセージが 1 件の場合は、{'message': msg} とすれば、フィールドの hint に表示することも可能
+    //       1件だけの場合は、この表示のほうがシンプルで良いかも。
     res[fieldName] = { types: fieldErrors };
   }
   return res;

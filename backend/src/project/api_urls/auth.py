@@ -8,6 +8,5 @@ urlpatterns = [
     path("auth/logout/", LogoutView.as_view(), name="rest_logout"),
     path("auth/token/refresh/", prj_auth_views.RefreshView.as_view(), name="token_refresh"),
     path("auth/csrf/", prj_auth_views.CSRFView.as_view(), name="csrf_token"),
-    path("auth/ping/", prj_auth_views.PingView.as_view(), name="ping"),
     path("auth/login_user/", UserDetailsView.as_view(), name="rest_user_details"),
 ]
