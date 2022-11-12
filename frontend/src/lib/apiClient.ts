@@ -2,6 +2,7 @@ import axios from 'axios';
 import aspida from '@aspida/axios';
 import api from '../api/$api';
 import { addMinutes, compareAsc } from 'date-fns';
+import { LoginRequest } from '../api/@types';
 
 const SAFE_METHODS = ['GET', 'HEAD', 'OPTIONS', 'TRACE']; // RFC7231
 const appendSlash = (url: string) => {
@@ -33,16 +34,11 @@ const getCsrfToken = async () => {
   return res['csrfToken'];
 };
 
-export const login = (username: string, password: string) => {
-  return apiClient.auth.login.$post({
-    body: {
-      username: username,
-      password: password,
-    },
-  }).then(res => {
+export const login = (data: LoginRequest) => {
+  return apiClient.auth.login.$post({ body: data }).then(res => {
     const time = (new Date(res.accessTokenExpiration)).getTime();
     localStorage.setItem('tokenExpireAt', String(time));
-    return res.user;
+    return res;
   });
 };
 

@@ -16,7 +16,9 @@ import { currentUserAtom } from '@/lib/jotaiAtom';
 import { apiClient, refreshToken } from '@/lib/apiClient';
 
 
-// react-query の設定
+/*
+ *  react-query の設定
+ */
 const queryClientOptions = {
   defaultOptions: {
     queries: {
@@ -28,13 +30,17 @@ const queryClientOptions = {
   },
 };
 
+/*
+ * Jotai のデバッグ用の関数
+ * ref: https://jotai.org/docs/api/devtools
+ */
 const DebugAtoms = () => {
   useAtomsDebugValue();
   return null;
 };
 
 /*
- * マウント時 認証
+ * マウント時の認証
  * 参考: https://zenn.dev/catnose99/articles/2169dae14b58b6
  */
 function AppInit() {
@@ -46,7 +52,7 @@ function AppInit() {
       try {
         await refreshToken();
         // サーバーへのリクエスト（未ログインの場合は401等を返すものとする）
-        const user=await apiClient.auth.login_user.$get();
+        const user = await apiClient.auth.login_user.$get();
         setCurrentUser(user);
       } catch {
         // 未ログイン（未ログイン時のリダイレクト処理などをここに書いても良いかも）
@@ -81,12 +87,12 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
     </ColorIconButton>
   );
 
-  // layout 設定
-  // 各ページのコンポーネントが getLayout 関数を持っている場合はそれを呼び出すようにする。
-  // 各ページの実装では getLayout 関数で そのページで使用する Layout を適用する。
-  // 参考: https://nextjs.org/docs/basic-features/layouts#with-typescript
-  //      https://zenn.dev/hisho/articles/fe9f4ec4a8e691
-  // ==========================================================
+  /* layout 設定
+   * 各ページのコンポーネントが getLayout 関数を持っている場合はそれを呼び出すようにする。
+   * 各ページの実装では getLayout 関数で そのページで使用する Layout を適用する。
+   * 参考: https://nextjs.org/docs/basic-features/layouts#with-typescript
+   *      https://zenn.dev/hisho/articles/fe9f4ec4a8e691
+   */
   // 自動でデフォルトの Layout 設定する場合は後者に適用する
   const getLayout = Component.getLayout ?? ((page) => <DefaultLayout>{page}</DefaultLayout>);
   const layoutComponent = getLayout(<Component {...pageProps} />);
