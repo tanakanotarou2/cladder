@@ -1,6 +1,7 @@
 import { Box, Button, Container, Paper, Stack, TextField, Typography } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
 
+import { useRouter } from 'next/router';
 import { useMutation } from 'react-query';
 import { useState } from 'react';
 import { LoginRequest } from '../../../api/@types';
@@ -17,6 +18,7 @@ const LoginBox = () => {
   const [, addMessage] = useAtom(messageAtom);
   const [, setCurrentUser] = useAtom(currentUserAtom);
   const [nonFieldErrors, setNonFieldErrors] = useState<string[] | null>(null);
+  const router = useRouter();
 
   const {
     handleSubmit,
@@ -27,9 +29,9 @@ const LoginBox = () => {
 
   const mutation = useMutation(login, {
     onSuccess: (res) => {
-      // TODO: ログイン後ページへ遷移
       setCurrentUser(res.user);
       addMessage({ text: `ごきげんよう、${res.user.username} さん`, 'variant': 'success' });
+      router.push('/home')
     },
     onError: (error: AxiosError) => {
       const formMsg = preprocessApiError(error);
