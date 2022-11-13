@@ -8,6 +8,7 @@ export function useRequireLogin() {
 
   useEffect(() => {
     if (isAuthChecking) return; // まだ確認中
+
     if (!currentUser) router.push('/'); // 未ログインだったのでリダイレクト
   }, [isAuthChecking, currentUser]);
 }

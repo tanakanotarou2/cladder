@@ -1,5 +1,4 @@
 import type { NextPageWithLayout } from 'next';
-import { Typography } from '@mui/material';
 import LoginBox from '@/components/Index/LoginBox';
 import { useCurrentUser } from '@/components/shared/CurrentUser/hooks/useCurrentUser';
 import { useRouter } from 'next/router';
