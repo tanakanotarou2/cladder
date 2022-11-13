@@ -1,6 +1,5 @@
 import { VariantType } from 'notistack';
 import { atomWithReset } from 'jotai/utils';
-import { atomWithStorage } from 'jotai/utils';
 import { atom } from 'jotai';
 
 /* snackbar message */
