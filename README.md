@@ -21,7 +21,7 @@ openapi2aspidaは、backendで出力されるエンドポイントのスキー�
 
 ## backend
 
-ビジネスロジックを分離する MVC+Service を意識して作成しています。
+Django REST framework を採用しています
 
 ### 使ったライブラリなど
 
@@ -29,6 +29,3 @@ openapi2aspidaは、backendで出力されるエンドポイントのスキー�
 * Django REST framework
 * drf-spectacular
 * dependency-injector
-
-drf-spectacularはエンドポイントのスキーマを出力するために使用しました。
-また、dependency-injectorを使ってDIをできるようにしています。
