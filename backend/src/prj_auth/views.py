@@ -14,6 +14,7 @@ from accounts.serializers import UserDetailSerializer
 from lib.views import UseUseCaseMixin
 from prj_auth.serializers import LoginResponseSerializer, RegisterUserSerializer
 from prj_auth.use_cases.registration.actions import RegisterUserAction
+from prj_auth.use_cases.registration.data import RegisterUserRequest
 
 
 class CSRFView(APIView):
@@ -82,7 +83,10 @@ class RegisterUserView(UseUseCaseMixin, APIView):
         request_serializer = RegisterUserSerializer(data=request.data)
         request_serializer.is_valid(raise_exception=True)
         # Actionに処理委譲
-        action = RegisterUserAction(request_serializer.validated_data)
+        # dataclass を使った受け渡しのお試し実装
+        # アクションには受け渡し用の dataclass を使うと dict より厳密にできるか？
+        request_data = RegisterUserRequest(**request_serializer.validated_data)
+        action = RegisterUserAction(request_data)
         instance = self.use_case_executor.execute(action)
 
         # response用のシリアライザ
