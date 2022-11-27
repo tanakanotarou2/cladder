@@ -12,4 +12,5 @@ class RegisterUserAction:
 
     def __call__(self, *args, **kwargs) -> User:
         # TODO: ユーザー登録は管理者ユーザー以外は登録できないように
+        print("called")
         return User.objects.create_user(**asdict(self._data))

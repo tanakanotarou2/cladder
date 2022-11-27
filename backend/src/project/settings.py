@@ -155,7 +155,6 @@ REST_FRAMEWORK = {
     ],
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "dj_rest_auth.jwt_auth.JWTCookieAuthentication",
-        "rest_framework.authentication.BasicAuthentication",
     ],
     "DEFAULT_RENDERER_CLASSES": ("djangorestframework_camel_case.render.CamelCaseJSONRenderer",),
     # doc: https://github.com/vbabiy/djangorestframework-camel-case#underscoreize-options
@@ -163,6 +162,10 @@ REST_FRAMEWORK = {
         "no_underscore_before_number": True,
     },
 }
+
+# swagger 用に basic 認証を許可
+if DEBUG:
+    REST_FRAMEWORK["DEFAULT_AUTHENTICATION_CLASSES"].append("rest_framework.authentication.BasicAuthentication")
 
 # dj_rest_auth
 # ==============================================================
