@@ -13,6 +13,8 @@ export type LoginRequest = {
 
 /** ログインレスポンス */
 export type LoginResponse = {
+  accessToken: string
+
   user: UserDetail
 
   /** アクセストークンの有効期限 */
@@ -28,13 +30,17 @@ export type PatchedUserDetailRequest = {
   profileIcon?: (File | ReadStream) | null | undefined
 }
 
-export type PingResponse = {
-  result: string
-}
-
 export type RefreshTokenResponse = {
   /** 新しいトークンの有効期限 */
   accessTokenExpiration: string
+}
+
+/** ユーザー登録リクエスト */
+export type RegisterUserRequest = {
+  username: string
+  lastName?: string | undefined
+  firstName?: string | undefined
+  password: string
 }
 
 export type RestAuthDetail = {

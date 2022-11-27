@@ -4,7 +4,7 @@ import type { Methods as Methods0 } from './auth/csrf'
 import type { Methods as Methods1 } from './auth/login'
 import type { Methods as Methods2 } from './auth/login_user'
 import type { Methods as Methods3 } from './auth/logout'
-import type { Methods as Methods4 } from './auth/ping'
+import type { Methods as Methods4 } from './auth/register'
 import type { Methods as Methods5 } from './auth/token/refresh'
 import type { Methods as Methods6 } from './schema'
 
@@ -14,7 +14,7 @@ const api = <T>({ baseURL, fetch }: AspidaClient<T>) => {
   const PATH1 = '/auth/login'
   const PATH2 = '/auth/login_user'
   const PATH3 = '/auth/logout'
-  const PATH4 = '/auth/ping'
+  const PATH4 = '/auth/register'
   const PATH5 = '/auth/token/refresh'
   const PATH6 = '/schema'
   const GET = 'GET'
@@ -156,17 +156,17 @@ const api = <T>({ baseURL, fetch }: AspidaClient<T>) => {
           fetch<Methods3['post']['resBody'], BasicHeaders, Methods3['post']['status']>(prefix, PATH3, POST, option).json().then(r => r.body),
         $path: () => `${prefix}${PATH3}`
       },
-      ping: {
+      register: {
         /**
-         * 認証検証用のエンドポイント
+         * ユーザー登録
          */
-        get: (option?: { config?: T | undefined } | undefined) =>
-          fetch<Methods4['get']['resBody'], BasicHeaders, Methods4['get']['status']>(prefix, PATH4, GET, option).json(),
+        post: (option: { body: Methods4['post']['reqBody'], config?: T | undefined }) =>
+          fetch<Methods4['post']['resBody'], BasicHeaders, Methods4['post']['status']>(prefix, PATH4, POST, option, 'FormData').json(),
         /**
-         * 認証検証用のエンドポイント
+         * ユーザー登録
          */
-        $get: (option?: { config?: T | undefined } | undefined) =>
-          fetch<Methods4['get']['resBody'], BasicHeaders, Methods4['get']['status']>(prefix, PATH4, GET, option).json().then(r => r.body),
+        $post: (option: { body: Methods4['post']['reqBody'], config?: T | undefined }) =>
+          fetch<Methods4['post']['resBody'], BasicHeaders, Methods4['post']['status']>(prefix, PATH4, POST, option, 'FormData').json().then(r => r.body),
         $path: () => `${prefix}${PATH4}`
       },
       token: {

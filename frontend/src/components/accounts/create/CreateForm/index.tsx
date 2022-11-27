@@ -7,10 +7,13 @@ import FieldErrorMessages from '@/components/shared/FieldErrorMessages';
 import { useAtom } from 'jotai';
 import { messageAtom } from '@/lib/jotaiAtom';
 import FormErrorMessages from '@/components/shared/FormErrorMessages';
-import { LoginRequest, UserDetail } from '@/api/@types';
+import { RegisterUserRequest, UserDetail } from '@/api/@types';
+import { preprocessApiError, reformatToHookFormStyle } from '@/lib/apiErrorHandle';
+import { useMutation } from 'react-query';
+import { apiClient } from '@/lib/apiClient';
+import { AxiosError } from 'axios';
 
-
-/**
+/*
  * ランダムなパスワードを作成
  * 参考: https://qiita.com/fukasawah/items/db7f0405564bdc37820e
  */
@@ -31,22 +34,48 @@ const CreateForm = () => {
     control,
     setError,
     formState: { errors },
-  } = useForm<UserDetail>();
+  } = useForm<RegisterUserRequest>();
+
+  const postRegister = (body: RegisterUserRequest) => {
+    return apiClient.auth.register.$post({ body });
+  };
+
+  const mutation = useMutation(postRegister, {
+    onSuccess: (res) => {
+      addMessage({ text: `登録しました`, 'variant': 'success' });
+      console.log('res', res);
+    },
+    onError: (error: AxiosError) => {
+      const formMsg = preprocessApiError(error);
+      if (!!formMsg) {
+        const msgs = reformatToHookFormStyle(formMsg);
+        for (const [key, value] of Object.entries(msgs)) {
+          // @ts-ignore
+          setError(key, value);
+        }
+        setNonFieldErrors(formMsg.nonFieldErrors);
+      } else {
+        addMessage({ text: '予期せぬエラーが発生しました。', 'variant': 'error' });
+      }
+    },
+    onSettled: () => {
+      setLoading(false);
+    },
+  });
 
   const onSubmit = (data: any) => {
-    if(enabledRandomPassword){
-      data['password']=generatePassword();
+    if (enabledRandomPassword) {
+      data['password'] = generatePassword();
     }
-    console.log("data",data);
-
-    // setLoading(true);
-    // setNonFieldErrors(null);
-    // mutation.mutate(data);
+    mutation.mutate(data);
+    setLoading(true);
+    setNonFieldErrors(null);
   };
 
   const handleChangeRandomPassword = () => {
     setEnabledRandomPassword(!enabledRandomPassword);
   };
+  console.log('a', errors.username);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -55,7 +84,7 @@ const CreateForm = () => {
           name='username'
           control={control}
           defaultValue=''
-          rules={{ required: '入力してください' }}
+          rules={{ required: '入力してください', minLength: { value: 4, message: '4文字以上入力してください' } }}
 
           render={({ field }) =>
             <TextField {...field}
@@ -75,14 +104,14 @@ const CreateForm = () => {
             <Controller
               name='password'
               control={control}
-              rules={enabledRandomPassword ?{}: { required: '入力してください' }}
+              rules={enabledRandomPassword ? { required: false } : { required: '入力してください' }}
               defaultValue=''
               render={({ field }) =>
                 <TextField {...field}
                            label='パスワード'
                            required={!enabledRandomPassword}
                            disabled={enabledRandomPassword}
-                           placeholder="********"
+                           placeholder='********'
                            type='password'
                            variant='filled'
                            InputLabelProps={{
@@ -93,6 +122,11 @@ const CreateForm = () => {
                 />
               }
             />
+
+            <Box mt={errors.password ? 2 : 0}>
+              <FieldErrorMessages name='password' errors={errors} />
+            </Box>
+
             <FormControlLabel
               control={
                 <Checkbox name='randomPasswordCheck'
@@ -104,7 +138,6 @@ const CreateForm = () => {
             />
           </Stack>
         </Box>
-        <FieldErrorMessages name='password' errors={errors} />
         <Box sx={{ py: 2 }}>
           <Stack direction='row'
                  spacing={2}
